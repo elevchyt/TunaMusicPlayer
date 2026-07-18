@@ -1,0 +1,38 @@
+{
+  "name": "tuna-music-player",
+  "version": "1.0.0",
+  "description": "TunaMusicPlayer — a modern, album-oriented music player for Windows and Linux",
+  "main": "./out/main/index.js",
+  "author": "Lefteris Hytiroglou",
+  "license": "MIT",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "start": "electron-vite preview",
+    "build": "electron-vite build",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
+    "check:search": "esbuild scripts/search-check.ts --bundle --platform=node --format=cjs --outfile=node_modules/.cache/search-check.cjs --log-level=warning && node node_modules/.cache/search-check.cjs",
+    "check:scan": "esbuild scripts/scan-check.ts --bundle --platform=node --format=cjs --outfile=node_modules/.cache/scan-check.cjs --log-level=warning && node node_modules/.cache/scan-check.cjs",
+    "build:win": "npm run build && electron-builder --win --publish never",
+    "build:linux": "npm run build && electron-builder --linux --publish never",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "dependencies": {
+    "electron-updater": "^6.3.9"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/react": "^18.3.17",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8",
+    "electron-vite": "^2.3.0",
+    "music-metadata": "^7.14.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "sharp": "^0.35.3",
+    "typescript": "^5.7.2",
+    "vite": "^5.4.11",
+    "zustand": "^5.0.2"
+  }
+}

@@ -1,0 +1,9 @@
+node_modules/
+out/
+dist/
+.DS_Store
+*.log
+
+# Generated icon previews are kept (build/icon.png is the packaged icon),
+# but the rasterised alternates can be regenerated with scripts/logos.mjs.
+build/logo-options/*.png

@@ -1,0 +1,42 @@
+appId: com.tuna.musicplayer
+productName: TunaMusicPlayer
+directories:
+  buildResources: build
+  output: dist
+files:
+  - '!**/.vscode/*'
+  - '!src/*'
+  - '!electron.vite.config.{js,ts,mjs,cjs}'
+  - '!{.eslintrc,.prettierrc,tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+asarUnpack:
+  - resources/**
+# Shipped unpacked so the main process can hand it to BrowserWindow at runtime
+# (Linux windows do not inherit the packaged icon automatically).
+extraResources:
+  - from: build/icon.png
+    to: icon.png
+win:
+  executableName: TunaMusicPlayer
+  # electron-builder derives the .ico from this 1024px PNG
+  # (regenerate with: node scripts/logos.mjs pick 1)
+  icon: build/icon.png
+  target:
+    - nsis
+    - portable
+nsis:
+  artifactName: ${name}-${version}-setup.${ext}
+  shortcutName: ${productName}
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+linux:
+  icon: build/icon.png
+  target:
+    - AppImage
+    - deb
+  maintainer: tuna
+  category: AudioVideo
+  desktop:
+    MimeType: audio/mpeg;audio/flac;audio/ogg;audio/x-wav;audio/mp4
+appImage:
+  artifactName: ${name}-${version}.${ext}
+npmRebuild: false
