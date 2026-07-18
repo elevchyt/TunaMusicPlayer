@@ -42,7 +42,9 @@ export interface Library {
   albums: Record<string, Album>
 }
 
-export type GroupBy = 'album' | 'albumArtist' | 'artist' | 'genre' | 'year' | 'folder'
+export type GroupBy = 'album' | 'artist' | 'genre' | 'year' | 'folder'
+
+export const GROUP_BY_VALUES: GroupBy[] = ['album', 'artist', 'genre', 'year', 'folder']
 
 export type UiMode = 'auto' | 'desktop' | 'mobile'
 

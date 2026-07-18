@@ -15,11 +15,11 @@ type-to-search, and first-class Greek support.
 - Album art from embedded pictures, falling back to `cover.jpg` / `folder.jpg`
   next to the tracks; extracted once and cached
 
-**Grouping** — album-oriented by default, but you choose: Albums, Album Artists,
-Artists, Genres, Years, or Folders. The default is a setting, not a hardcode.
-Any group spanning several albums (an album artist, a genre, a year) shows a
-2×2 mosaic of up to four of its covers, deduplicated so a group whose albums
-share one cover doesn't render four identical squares.
+**Grouping** — album-oriented by default, but you choose: Albums, Artists,
+Genres, Years, or Folders. The default is a setting, not a hardcode. Any group
+spanning several albums (an artist, a genre, a year) shows a 2×2 mosaic of up to
+four of its covers, deduplicated so a group whose albums share one cover doesn't
+render four identical squares.
 
 **Themes** — six accent palettes: Aqua, Nullsoft (the classic green LCD), Amber,
 Violet, Rose and Azure. Switching recolours the whole UI including the logo,

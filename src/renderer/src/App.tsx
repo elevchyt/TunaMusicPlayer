@@ -68,7 +68,6 @@ export default function App(): JSX.Element {
     if (!library) return {}
     return {
       album: Object.keys(library.albums).length,
-      albumArtist: new Set(Object.values(library.albums).map((a) => a.albumArtist)).size,
       artist: new Set(Object.values(library.tracks).map((t) => t.artist)).size,
       genre: new Set(Object.values(library.albums).map((a) => a.genre)).size,
       year: new Set(Object.values(library.albums).map((a) => a.year ?? 0)).size,
@@ -272,8 +271,6 @@ export default function App(): JSX.Element {
 
 function titleFor(groupBy: string | undefined): string {
   switch (groupBy) {
-    case 'albumArtist':
-      return 'Album Artists'
     case 'artist':
       return 'Artists'
     case 'genre':

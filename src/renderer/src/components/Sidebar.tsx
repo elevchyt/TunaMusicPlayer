@@ -1,12 +1,11 @@
 import type { GroupBy } from '@shared/types'
 import { useStore } from '../store'
-import { Calendar, Disc, Folder, Mic, Refresh, Settings as SettingsIcon, Tag } from './Icons'
+import { Calendar, Disc, Folder, Refresh, Settings as SettingsIcon, Tag, User } from './Icons'
 import { Logo } from './Logo'
 
 export const GROUPINGS: Array<{ key: GroupBy; label: string; icon: JSX.Element }> = [
   { key: 'album', label: 'Albums', icon: <Disc /> },
-  { key: 'albumArtist', label: 'Album Artists', icon: <Mic /> },
-  { key: 'artist', label: 'Artists', icon: <Mic /> },
+  { key: 'artist', label: 'Artists', icon: <User /> },
   { key: 'genre', label: 'Genres', icon: <Tag /> },
   { key: 'year', label: 'Years', icon: <Calendar /> },
   { key: 'folder', label: 'Folders', icon: <Folder /> }

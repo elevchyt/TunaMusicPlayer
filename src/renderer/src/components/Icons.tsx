@@ -94,10 +94,11 @@ export const Disc = ({ size = 16 }: Props): JSX.Element => (
   </svg>
 )
 
-export const Mic = ({ size = 16 }: Props): JSX.Element => (
+/** lucide "user" — https://lucide.dev/icons/user */
+export const User = ({ size = 16 }: Props): JSX.Element => (
   <svg {...base(size)}>
-    <rect x="9" y="2" width="6" height="11" rx="3" />
-    <path d="M5 11a7 7 0 0 0 14 0M12 18v4" />
+    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+    <circle cx="12" cy="7" r="4" />
   </svg>
 )
 

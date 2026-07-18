@@ -7,3 +7,6 @@ dist/
 # Generated icon previews are kept (build/icon.png is the packaged icon),
 # but the rasterised alternates can be regenerated with scripts/logos.mjs.
 build/logo-options/*.png
+
+# TypeScript incremental build state
+*.tsbuildinfo

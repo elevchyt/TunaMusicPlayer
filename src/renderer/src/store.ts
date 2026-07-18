@@ -290,8 +290,6 @@ function startTrack(get: () => State, set: (patch: Partial<State>) => void, trac
 
 function groupKeyFor(album: Album, groupBy: GroupBy): { key: string; title: string } {
   switch (groupBy) {
-    case 'albumArtist':
-      return { key: album.albumArtist.toLowerCase(), title: album.albumArtist }
     case 'genre':
       return { key: album.genre.toLowerCase(), title: album.genre }
     case 'year':

@@ -4,7 +4,6 @@ import { Cover } from './Cover'
 import { SeekBar } from './SeekBar'
 import {
   Disc,
-  Mic,
   Next,
   Pause,
   Play,
@@ -14,6 +13,7 @@ import {
   Search as SearchIcon,
   Settings as SettingsIcon,
   Shuffle,
+  User,
   Volume,
   VolumeMute
 } from './Icons'
@@ -205,7 +205,7 @@ function MobileNav(): JSX.Element {
           navigate({ kind: 'library' })
         }}
       >
-        <Mic size={19} />
+        <User size={19} />
         <span>Artists</span>
       </button>
       <button onClick={() => openSearch('')}>
