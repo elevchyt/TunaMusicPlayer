@@ -105,6 +105,8 @@ export const useStore = create<State>((set, get) => ({
     audio.onStateChange((playing) => set({ playing }))
     audio.onEnded(() => get().next())
     audio.onError((message) => set({ toast: message, playing: false }))
+
+    setupMediaSession(get)
   },
 
   setSettings: async (patch) => {
@@ -253,6 +255,14 @@ export const useStore = create<State>((set, get) => ({
     set({ repeat: order[(order.indexOf(current) + 1) % order.length] })
   }
 }))
+
+function setupMediaSession(get: () => State): void {
+  if (!('mediaSession' in navigator)) return
+  navigator.mediaSession.setActionHandler('play', () => get().toggle())
+  navigator.mediaSession.setActionHandler('pause', () => get().toggle())
+  navigator.mediaSession.setActionHandler('previoustrack', () => get().previous())
+  navigator.mediaSession.setActionHandler('nexttrack', () => get().next())
+}
 
 function startTrack(get: () => State, set: (patch: Partial<State>) => void, trackId: string): void {
   const state = get()

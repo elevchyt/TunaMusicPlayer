@@ -39,6 +39,14 @@
   padding: 0;
 }
 
+*:focus {
+  outline: none;
+}
+
+*:focus-visible {
+  outline: none;
+}
+
 html,
 body,
 #root {
