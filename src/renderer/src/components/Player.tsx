@@ -57,7 +57,10 @@ export function Player(): JSX.Element {
   return (
     <div className="player">
       <div className="player-inner">
-        <div className="now-playing">
+        <div
+          className="now-playing"
+          onClick={() => track && album && navigate({ kind: 'detail', groupId: album.id })}
+        >
           {track ? (
             <>
               <Cover
@@ -70,11 +73,7 @@ export function Player(): JSX.Element {
                 <div className="np-title" title={track.title}>
                   {track.title}
                 </div>
-                <div
-                  className="np-artist"
-                  title={track.artist}
-                  onClick={() => album && navigate({ kind: 'detail', groupId: album.id })}
-                >
+                <div className="np-artist" title={track.artist}>
                   {track.artist}
                 </div>
               </div>

@@ -690,6 +690,13 @@ kbd {
   align-items: center;
   gap: 12px;
   min-width: 0;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: background 0.12s;
+}
+
+.now-playing:hover {
+  background: var(--bg-elev-2);
 }
 
 .np-art {
