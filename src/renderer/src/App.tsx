@@ -108,9 +108,11 @@ export default function App(): JSX.Element {
 
       switch (event.key) {
         case ' ':
-          // Also swallow Space when a button has focus so it does not re-fire
-          // whatever was last clicked.
           event.preventDefault()
+          // Blur any focused button so Space does not also trigger its click.
+          if (document.activeElement && document.activeElement !== document.body) {
+            (document.activeElement as HTMLElement).blur()
+          }
           store.toggle()
           return
         case 'ArrowRight':

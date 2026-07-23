@@ -162,6 +162,11 @@ export function Player(): JSX.Element {
                 step={0.01}
                 value={volume}
                 onChange={(event) => setVolume(Number(event.target.value))}
+                onWheel={(event) => {
+                  event.preventDefault()
+                  const delta = event.deltaY < 0 ? 0.05 : -0.05
+                  setVolume(Math.max(0, Math.min(1, volume + delta)))
+                }}
                 // --vol drives the filled portion of the track gradient.
                 style={{ ['--vol' as string]: `${volume * 100}%` }}
                 title={`Volume ${Math.round(volume * 100)}%`}
