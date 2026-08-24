@@ -282,11 +282,42 @@ export interface ScanOptions {
   folders: string[]
   coverDir: string
   previous: Library | null
+  /**
+   * Hard refresh: re-read every tag and re-extract every cover instead of
+   * trusting the cached library, and drop cover files nothing references any
+   * more. This is what the "Rescan library" button asks for — an incremental
+   * scan only notices files that were added, moved or touched, so edits that
+   * leave mtime and size alone (and stale artwork) would survive forever.
+   */
+  full?: boolean
   onProgress: (p: ScanProgress) => void
 }
 
+/** Drop cover files the freshly scanned library no longer references. */
+async function pruneCovers(coverDir: string, albums: Album[]): Promise<void> {
+  const keep = new Set<string>()
+  for (const album of albums) if (album.cover) keep.add(album.cover)
+
+  let entries: string[]
+  try {
+    entries = await fs.readdir(coverDir)
+  } catch {
+    return
+  }
+  await Promise.all(
+    entries.map(async (entry) => {
+      if (keep.has(entry)) return
+      try {
+        await fs.unlink(path.join(coverDir, entry))
+      } catch {
+        // Best effort — a locked or already-gone file is not worth failing on.
+      }
+    })
+  )
+}
+
 export async function scanLibrary(options: ScanOptions): Promise<Library> {
-  const { folders, coverDir, previous, onProgress } = options
+  const { folders, coverDir, previous, full = false, onProgress } = options
   await fs.mkdir(coverDir, { recursive: true })
 
   onProgress({ phase: 'walking', processed: 0, total: 0, current: '' })
@@ -302,8 +333,9 @@ export async function scanLibrary(options: ScanOptions): Promise<Library> {
   }
 
   // Index the previous run by path so unchanged files skip metadata parsing.
+  // A full rescan deliberately leaves this empty so every file is re-read.
   const prevByPath = new Map<string, Track>()
-  if (previous) {
+  if (previous && !full) {
     for (const track of Object.values(previous.tracks)) prevByPath.set(track.path, track)
   }
 
@@ -374,7 +406,8 @@ export async function scanLibrary(options: ScanOptions): Promise<Library> {
   }
 
   // --- covers ---
-  const prevAlbums = previous?.albums ?? {}
+  // A full rescan re-extracts every cover rather than trusting the cache.
+  const prevAlbums: Record<string, Album> = full ? {} : previous?.albums ?? {}
   const albumList = Object.values(albums)
   let coverDone = 0
 
@@ -406,6 +439,8 @@ export async function scanLibrary(options: ScanOptions): Promise<Library> {
       })
     }
   })
+
+  if (full) await pruneCovers(coverDir, albumList)
 
   onProgress({
     phase: 'done',

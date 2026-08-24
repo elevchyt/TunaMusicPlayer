@@ -186,7 +186,12 @@ export default function App(): JSX.Element {
           )}
           <div className="spacer" />
           {!isMobile && view.kind === 'library' && (
-            <button className="btn ghost" onClick={rescan} disabled={scanning} title="Rescan library">
+            <button
+              className="btn ghost"
+              onClick={() => rescan(true)}
+              disabled={scanning}
+              title="Rescan library"
+            >
               <span className={scanning ? 'spin' : ''} style={{ display: 'flex' }}>
                 <Refresh size={15} />
               </span>
@@ -229,7 +234,7 @@ export default function App(): JSX.Element {
                   <Plus size={15} /> Add music folder
                 </button>
                 {hasFolders && (
-                  <button className="btn" onClick={rescan} disabled={scanning}>
+                  <button className="btn" onClick={() => rescan(true)} disabled={scanning}>
                     <Refresh size={15} /> Rescan
                   </button>
                 )}

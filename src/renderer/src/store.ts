@@ -47,7 +47,7 @@ interface State {
 
   init: () => Promise<void>
   setSettings: (patch: Partial<Settings>) => Promise<void>
-  rescan: () => Promise<void>
+  rescan: (full?: boolean) => Promise<void>
   addFolder: () => Promise<void>
   removeFolder: (folder: string) => Promise<void>
 
@@ -69,6 +69,22 @@ interface State {
 }
 
 const EMPTY_SCAN: ScanProgress = { phase: 'idle', processed: 0, total: 0, current: '' }
+
+/**
+ * Where each grid was last scrolled to, keyed by the active grouping. Kept out
+ * of the zustand state deliberately: it changes on every scroll frame and no
+ * component should re-render because of it. The grid unmounts while a detail
+ * view is open, so this is what lets Back land where the user left off.
+ */
+const gridScroll = new Map<string, number>()
+
+export function gridScrollFor(key: string): number {
+  return gridScroll.get(key) ?? 0
+}
+
+export function rememberGridScroll(key: string, top: number): void {
+  gridScroll.set(key, top)
+}
 
 export const useStore = create<State>((set, get) => ({
   settings: null,
@@ -116,13 +132,15 @@ export const useStore = create<State>((set, get) => ({
     if (patch.gridSize !== undefined) {
       document.documentElement.style.setProperty('--grid-size', `${patch.gridSize}px`)
     }
+    // Switching to a different list starts at the top; only Back restores.
+    if (patch.groupBy !== undefined) gridScroll.delete(patch.groupBy)
     const settings = await window.tuna.setSettings(patch)
     set({ settings })
   },
 
-  rescan: async () => {
+  rescan: async (full = false) => {
     try {
-      const library = await window.tuna.scanLibrary()
+      const library = await window.tuna.scanLibrary(full)
       set({ library })
     } catch (error) {
       set({ toast: error instanceof Error ? error.message : 'Scan failed' })

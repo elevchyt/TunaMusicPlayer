@@ -56,7 +56,7 @@ export function Sidebar({ counts }: Props): JSX.Element {
 
       <div className="nav-section">
         <div className="nav-label">Library</div>
-        <button className="nav-item" onClick={rescan} disabled={scanning}>
+        <button className="nav-item" onClick={() => rescan(true)} disabled={scanning}>
           <span className={scanning ? 'spin' : ''} style={{ display: 'flex' }}>
             <Refresh />
           </span>

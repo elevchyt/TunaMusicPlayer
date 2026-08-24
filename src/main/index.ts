@@ -152,9 +152,10 @@ async function reachableFolders(folders: string[]): Promise<{ ok: string[]; miss
 
 /**
  * Returns the new library only when it actually differs, so callers can skip
- * notifying the renderer on a no-op rescan.
+ * notifying the renderer on a no-op rescan. `full` forces a hard refresh —
+ * every tag re-read and every cover re-extracted.
  */
-async function runScan(): Promise<{ library: Library; changed: boolean }> {
+async function runScan(full = false): Promise<{ library: Library; changed: boolean }> {
   if (scanning) throw new Error('A scan is already running')
 
   const previous = library
@@ -194,10 +195,15 @@ async function runScan(): Promise<{ library: Library; changed: boolean }> {
       folders: ok,
       coverDir: coverDir(),
       previous,
+      full,
       onProgress: emitProgress
     })
 
-    const changed = !previous || librarySignature(previous) !== librarySignature(scanned)
+    // A full rescan always counts as changed: it exists precisely to pick up
+    // edits the signature cannot see, such as retagged files whose mtime and
+    // size are unchanged.
+    const changed =
+      full || !previous || librarySignature(previous) !== librarySignature(scanned)
     library = scanned
     if (changed) await saveLibrary(scanned)
 
@@ -234,7 +240,7 @@ function registerIpc(): void {
 
   ipcMain.handle('library:get', () => library)
 
-  ipcMain.handle('library:scan', async () => (await runScan()).library)
+  ipcMain.handle('library:scan', async (_event, full?: boolean) => (await runScan(full === true)).library)
 
   ipcMain.handle('dialog:pickFolder', async () => {
     if (!mainWindow) return null

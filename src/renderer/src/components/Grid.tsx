@@ -1,5 +1,5 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react'
-import type { Group } from '../store'
+import { useLayoutEffect, useRef, useState } from 'react'
+import { gridScrollFor, rememberGridScroll, type Group } from '../store'
 import { CoverMosaic } from './Cover'
 import { Play } from './Icons'
 
@@ -38,14 +38,22 @@ export function Grid({ groups, onOpen, onPlay, tileSize, resetKey }: Props): JSX
     return () => observer.disconnect()
   }, [])
 
-  // Jump back to the top when the user switches to a different list — but NOT
-  // when the same list is rebuilt underneath them. A background rescan produces
-  // fresh group objects, and resetting on identity would yank the grid to the
-  // top mid-scroll.
-  useEffect(() => {
-    scrollRef.current?.scrollTo({ top: 0 })
-    setScrollTop(0)
-  }, [resetKey])
+  // Restore the offset this list was left at. The grid unmounts while a detail
+  // view is open, so without this, coming back always lands at the top. A list
+  // the user has not visited yet resolves to 0, which is the old behaviour.
+  //
+  // Only ever runs once per list: a background rescan rebuilds the same groups
+  // underneath the user, and re-applying the offset then would fight whatever
+  // they are doing. Waits for the first measurement too, since scrollTo is
+  // clamped while the viewport still has no height.
+  const restoredKey = useRef<string | null>(null)
+  useLayoutEffect(() => {
+    if (width === 0 || restoredKey.current === resetKey) return
+    restoredKey.current = resetKey
+    const top = gridScrollFor(resetKey)
+    scrollRef.current?.scrollTo({ top })
+    setScrollTop(top)
+  }, [resetKey, width])
 
   const padding = 20
   const available = Math.max(0, width - padding * 2)
@@ -107,7 +115,15 @@ export function Grid({ groups, onOpen, onPlay, tileSize, resetKey }: Props): JSX
   }
 
   return (
-    <div className="scroll" ref={scrollRef} onScroll={(e) => setScrollTop(e.currentTarget.scrollTop)}>
+    <div
+      className="scroll"
+      ref={scrollRef}
+      onScroll={(event) => {
+        const top = event.currentTarget.scrollTop
+        setScrollTop(top)
+        rememberGridScroll(resetKey, top)
+      }}
+    >
       <div
         className="grid-viewport"
         style={{ height: padding * 2 + rowCount * (rowHeight + GAP) - GAP }}

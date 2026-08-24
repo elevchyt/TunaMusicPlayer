@@ -63,7 +63,7 @@ export function SettingsView(): JSX.Element {
             <button className="btn primary" onClick={addFolder}>
               <Plus size={15} /> Add folder
             </button>
-            <button className="btn" onClick={rescan} disabled={scanning}>
+            <button className="btn" onClick={() => rescan(true)} disabled={scanning}>
               <span className={scanning ? 'spin' : ''} style={{ display: 'flex' }}>
                 <Refresh size={15} />
               </span>

@@ -7,7 +7,8 @@ const api = {
     ipcRenderer.invoke('settings:set', patch),
 
   getLibrary: (): Promise<Library | null> => ipcRenderer.invoke('library:get'),
-  scanLibrary: (): Promise<Library> => ipcRenderer.invoke('library:scan'),
+  /** `full` asks for a hard refresh instead of an incremental one. */
+  scanLibrary: (full = false): Promise<Library> => ipcRenderer.invoke('library:scan', full),
 
   pickFolder: (): Promise<string[] | null> => ipcRenderer.invoke('dialog:pickFolder'),
   revealInFolder: (filePath: string): Promise<void> => ipcRenderer.invoke('shell:reveal', filePath),
