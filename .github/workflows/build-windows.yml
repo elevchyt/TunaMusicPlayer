@@ -1,0 +1,44 @@
+# Windows installers cannot be produced from the Linux dev machine: the
+# packaging step shells out to rcedit through wine to stamp the executable's
+# icon and version info. Building on a real Windows runner avoids that
+# entirely, and the artifacts land straight on the release.
+name: Build Windows
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag to build and attach the installers to (e.g. v1.1.1)
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run typecheck
+
+      - run: npm run build:win
+
+      - name: Attach installers to the release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload "${{ inputs.tag }}" dist/*.exe --clobber
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-installers
+          path: dist/*.exe
